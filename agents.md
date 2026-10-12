@@ -85,3 +85,32 @@ src/
   - テクスチャ参照（MToon 0.x の `materialProperties.textureProperties` と MToon 1.0 の `extensions.VRMC_materials_mtoon`）はプルーナーで漏れなく追跡する必要があります。
 - **Unity (UniVRM) 互換性**:
   - `secondaryAnimation.colliderGroups` のインデックス参照不整合、および無効な `meshAnnotations` / `blendShapeMaster` バインドインデックスは Unity 側でロードエラーとなるため、`vrmMerger.ts` 内で常にサニタイズ処理を実施しています。
+
+---
+
+## 6. ホスティング & デプロイ環境（Cloudflare Workers）
+
+本アプリケーションは、**Cloudflare Workers（Workers Static Assets）** を使用して世界中へ高速・無料配信されています。
+
+### 6.1 デプロイ構成
+- **構成**: Workers Static Assets（SPA配信モード）
+- **設定ファイル**: [`wrangler.toml`](file:///home/gomama/project/blender_editor/wrangler.toml)
+  ```toml
+  name = "blender-editor"
+  compatibility_date = "2026-04-01"
+
+  [assets]
+  directory = "./dist"
+  html_handling = "auto-trailing-slash"
+  not_found_handling = "single-page-application"
+  ```
+- **注意点**: 静的アセット専用Workerでは `binding = "ASSETS"` を指定するとエラーになるため設定不要。
+
+### 6.2 デプロイコマンド
+コードを修正した後は、以下のコマンドでビルドからCloudflareへのデプロイまでが一括実行されます：
+```bash
+npm run deploy
+```
+
+### 6.3 独自ドメイン連携
+Cloudflare Workers の「Custom Domains」機能により、独自ドメイン（`majigomama.com` 配下のサブドメインなど）が無料SSL（HTTPS）対応でバインドされています。
