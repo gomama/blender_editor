@@ -4,6 +4,5 @@ compatibility_date = "2026-04-01"
 # Cloudflare Workers Static Assets (SPA mode)
 [assets]
 directory = "./dist"
-binding = "ASSETS"
 html_handling = "auto-trailing-slash"
 not_found_handling = "single-page-application"
